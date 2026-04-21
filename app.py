@@ -3,7 +3,7 @@ import pandas as pd
 import re
 
 # 페이지 설정
-st.set_page_config(page_title="약어 검색 앱", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="약어 검색 앱", page_icon="🔍", layout="centered", initial_sidebar_state="collapsed")
 
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
