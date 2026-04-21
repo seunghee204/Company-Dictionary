@@ -1,10 +1,37 @@
 import streamlit as st
 import pandas as pd
 import re
+import base64
+import streamlit.components.v1 as components
 
 # 페이지 설정
 # 페이지 설정 (기본 돋보기 이모지 사용)
 st.set_page_config(page_title="사내 약어 사전", page_icon="icon.png", layout="centered", initial_sidebar_state="collapsed")
+
+# 🍎 [필살기] 애플 아이폰 전용 고화질 홈 화면 아이콘 강제 주입 (가짜 '사' 방지)
+def set_apple_touch_icon(image_path):
+    try:
+        with open(image_path, "rb") as f:
+            encoded_string = base64.b64encode(f.read()).decode()
+        b64_src = f"data:image/png;base64,{encoded_string}"
+        js_code = f"""
+        <script>
+            // 꼼수: iframe 외부의 실제 화면(부모 창)의 <head>를 해킹해서 억지로 아이콘을 쑤셔 넣음!
+            var target_doc = window.parent.document;
+            var link = target_doc.querySelector("link[rel~='apple-touch-icon']");
+            if (!link) {{
+                link = target_doc.createElement('link');
+                link.rel = 'apple-touch-icon';
+                target_doc.head.appendChild(link);
+            }}
+            link.href = "{b64_src}";
+        </script>
+        """
+        components.html(js_code, height=0, width=0)
+    except Exception as e:
+        pass
+
+set_apple_touch_icon("icon.png")
 
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
