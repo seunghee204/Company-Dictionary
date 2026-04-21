@@ -71,15 +71,26 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 검색어 하이라이트 함수
+import extra_streamlit_components as stx
+import datetime
+
 def highlight_text(text, query):
     if not query or not str(text).strip():
         return text
     pattern = re.compile(f"({re.escape(query)})", re.IGNORECASE)
     return pattern.sub(r"<span class='highlight'>\1</span>", str(text))
 
-# ================= 사내 보안 방어막 (로그인) =================
+# ================= 사내 보안 방어막 (로그인/자동로그인 적용) =================
+# 30일 자동 로그인 쿠키 매니저 연결
+cookie_manager = stx.CookieManager()
+cached_auth = cookie_manager.get(cookie="corp_auth_token")
+
 if 'authenticated' not in st.session_state:
-    st.session_state['authenticated'] = False
+    # 쿠키 검사 (쿠키가 있으면 자동 로그인 통과!)
+    if cached_auth == "cs0000_verified":
+        st.session_state['authenticated'] = True
+    else:
+        st.session_state['authenticated'] = False
 
 login_placeholder = st.empty()
 
@@ -90,12 +101,14 @@ if not st.session_state['authenticated']:
         
         with st.form("login_form"):
             pwd = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="비밀번호 입력")
-            login_btn = st.form_submit_button("접속하기", type="primary", use_container_width=True)
+            login_btn = st.form_submit_button("접속하기 & 하루(1일) 유지", type="primary", use_container_width=True)
             
             if login_btn:
                 if pwd.strip() == "CS0000":
                     st.session_state['authenticated'] = True
-                    login_placeholder.empty()  # 클라우드 응답을 기다리지 않고 화면에서 폼을 즉시 파괴함!
+                    # 쿠키 발급: 브라우저에 1일(초 단위 계산) 동안 유효한 쿠키를 구워버림
+                    cookie_manager.set("corp_auth_token", "cs0000_verified", max_age=int(datetime.timedelta(days=1).total_seconds()))
+                    login_placeholder.empty()
                     st.rerun()
                 else:
                     st.error("❌ 비밀번호가 올바르지 않습니다.")
