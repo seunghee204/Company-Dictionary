@@ -6,18 +6,6 @@ import re
 # 로컬 이미지 파일(icon.png)을 직접 지정하여 모바일 홈 화면 아이콘을 완벽하게 오버라이드함
 st.set_page_config(page_title="사내 약어 사전", page_icon="icon.png", layout="centered", initial_sidebar_state="collapsed")
 
-# 아이폰 PWA(전체화면) 키보드 증발 버그 픽스 (SVG onload 해킹으로 백그라운드에서 tabindex를 날려버림)
-st.markdown("""
-    <svg style="display:none" onload="
-        setInterval(function() {
-            var stApp = window.parent.document.querySelector('.stApp');
-            if (stApp && stApp.getAttribute('tabindex') === '-1') {
-                stApp.removeAttribute('tabindex');
-            }
-        }, 500);
-    "></svg>
-""", unsafe_allow_html=True)
-
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
     <style>
@@ -84,25 +72,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 검색어 하이라이트 함수
-import extra_streamlit_components as stx
-import datetime
-
 def highlight_text(text, query):
     if not query or not str(text).strip():
         return text
     pattern = re.compile(f"({re.escape(query)})", re.IGNORECASE)
     return pattern.sub(r"<span class='highlight'>\1</span>", str(text))
 
-# ================= 사내 보안 방어막 (로그인/자동로그인 적용) =================
-# 1일 자동 로그인 쿠키 매니저 연결
-cookie_manager = stx.CookieManager()
-cached_auth = cookie_manager.get(cookie="corp_auth_token")
-
-# 주의: Streamlit 클라우드 특성상 처음 접속할 때 쿠키를 읽어오는데 0.1초 딜레이가 발생함 (처음엔 None을 반환)
-# 따라서 쿠키가 유효한 값으로 확인되면 '무조건' 로그인 상태를 True로 강제 고정해야 함
-if cached_auth == "cs0000_verified":
-    st.session_state['authenticated'] = True
-elif 'authenticated' not in st.session_state:
+# ================= 사내 보안 방어막 (로그인) =================
+if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
 login_placeholder = st.empty()
@@ -119,8 +96,6 @@ if not st.session_state['authenticated']:
             if login_btn:
                 if pwd.strip() == "CS0000":
                     st.session_state['authenticated'] = True
-                    # 쿠키 발급: 브라우저에 1일(초 단위 계산) 동안 유효한 쿠키를 구워버림
-                    cookie_manager.set("corp_auth_token", "cs0000_verified", max_age=int(datetime.timedelta(days=1).total_seconds()))
                     login_placeholder.empty()
                     st.rerun()
                 else:
