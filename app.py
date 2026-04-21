@@ -3,15 +3,8 @@ import pandas as pd
 import re
 
 # 페이지 설정
-st.set_page_config(page_title="사내 약어 사전", page_icon="🔍", layout="centered", initial_sidebar_state="collapsed")
-
-# 모바일 홈 화면(아이폰/안드로이드) 강제 아이콘 변경 (스트림릿 빨간 왕관 무력화)
-st.markdown("""
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f50d.svg">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f50d.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f50d.png">
-    <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f50d.png">
-""", unsafe_allow_html=True)
+# 로컬 이미지 파일(icon.png)을 직접 지정하여 모바일 홈 화면 아이콘을 완벽하게 오버라이드함
+st.set_page_config(page_title="사내 약어 사전", page_icon="icon.png", layout="centered", initial_sidebar_state="collapsed")
 
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
@@ -89,16 +82,16 @@ def highlight_text(text, query):
     return pattern.sub(r"<span class='highlight'>\1</span>", str(text))
 
 # ================= 사내 보안 방어막 (로그인/자동로그인 적용) =================
-# 30일 자동 로그인 쿠키 매니저 연결
+# 1일 자동 로그인 쿠키 매니저 연결
 cookie_manager = stx.CookieManager()
 cached_auth = cookie_manager.get(cookie="corp_auth_token")
 
-if 'authenticated' not in st.session_state:
-    # 쿠키 검사 (쿠키가 있으면 자동 로그인 통과!)
-    if cached_auth == "cs0000_verified":
-        st.session_state['authenticated'] = True
-    else:
-        st.session_state['authenticated'] = False
+# 주의: Streamlit 클라우드 특성상 처음 접속할 때 쿠키를 읽어오는데 0.1초 딜레이가 발생함 (처음엔 None을 반환)
+# 따라서 쿠키가 유효한 값으로 확인되면 '무조건' 로그인 상태를 True로 강제 고정해야 함
+if cached_auth == "cs0000_verified":
+    st.session_state['authenticated'] = True
+elif 'authenticated' not in st.session_state:
+    st.session_state['authenticated'] = False
 
 login_placeholder = st.empty()
 
