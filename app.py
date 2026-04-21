@@ -56,10 +56,10 @@ st.markdown("""
         padding: 0 4px;
     }
     
-    /* 스트림릿 특유의 화면 전환(사라질 때 흐려지는) 애니메이션 강제 삭제 */
-    div[data-testid="stForm"], div.element-container, div[data-testid="stVerticalBlock"] {
-        transition: none !important;
-        animation: none !important;
+    /* 스트림릿 특유의 화면 전환(사라질 때 흐려지는) 애니메이션 완벽한 강제 삭제 */
+    * {
+        transition: opacity 0s !important;
+        animation-duration: 0s !important;
     }
     
     /* 하단 여백 추가 */
