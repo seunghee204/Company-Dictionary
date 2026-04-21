@@ -3,7 +3,15 @@ import pandas as pd
 import re
 
 # 페이지 설정
-st.set_page_config(page_title="약어 검색 앱", page_icon="🔍", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="사내 약어 사전", page_icon="🔍", layout="centered", initial_sidebar_state="collapsed")
+
+# 모바일 홈 화면(아이폰/안드로이드) 강제 아이콘 변경 (스트림릿 빨간 왕관 무력화)
+st.markdown("""
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f50d.svg">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f50d.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f50d.png">
+    <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f50d.png">
+""", unsafe_allow_html=True)
 
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
