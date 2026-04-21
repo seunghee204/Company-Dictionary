@@ -48,12 +48,18 @@ st.markdown("""
         font-weight: 700;
     }
     
-    /* 형광펜 효과 (다크/라이트 모두 잘 보이는 연한 노란색) */
+    /* 하이라이트 글씨는 다크/라이트 모드 범용적인 연한 노란색 렌더링 */
     .highlight {
-        background-color: rgba(255, 235, 59, 0.6);
+        background-color: rgba(250, 204, 21, 0.5);
         font-weight: bold;
         border-radius: 3px;
-        padding: 0 2px;
+        padding: 0 4px;
+    }
+    
+    /* 스트림릿 특유의 화면 전환(사라질 때 흐려지는) 애니메이션 강제 삭제 */
+    div[data-testid="stForm"], div.element-container, div[data-testid="stVerticalBlock"] {
+        transition: none !important;
+        animation: none !important;
     }
     
     /* 하단 여백 추가 */
@@ -93,7 +99,7 @@ if not st.session_state['authenticated']:
     st.stop()
 # =========================================================
 
-st.markdown("<h1 class='app-title'>⚡ 회사 약어 사전</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='app-title'>🔍 사내 약어 사전</h1>", unsafe_allow_html=True)
 
 @st.cache_data
 def load_data():
