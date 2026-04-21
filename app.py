@@ -81,21 +81,24 @@ def highlight_text(text, query):
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
+login_placeholder = st.empty()
+
 if not st.session_state['authenticated']:
-    st.markdown("<h2 style='text-align: center; margin-top: 50px;'>🔒 사내 보안 접속</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; opacity: 0.6; margin-bottom: 30px;'>이 앱은 회사 내부 전용입니다. 공용 비밀번호를 입력해주세요.</p>", unsafe_allow_html=True)
-    
-    with st.form("login_form"):
-        pwd = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="비밀번호 입력")
-        login_btn = st.form_submit_button("접속하기", type="primary", use_container_width=True)
+    with login_placeholder.container():
+        st.markdown("<h2 style='text-align: center; margin-top: 50px;'>🔒 사내 보안 접속</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; opacity: 0.6; margin-bottom: 30px;'>이 앱은 회사 내부 전용입니다. 공용 비밀번호를 입력해주세요.</p>", unsafe_allow_html=True)
         
-        if login_btn:
-            if pwd.strip() == "CS0000":
-                st.session_state['authenticated'] = True
-                st.rerun()
-            else:
-                st.error("❌ 비밀번호가 올바르지 않습니다.")
-    # 비밀번호를 틀리거나 입력하지 않으면 여기서 화면 렌더링을 완전히 정지시킴
+        with st.form("login_form"):
+            pwd = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="비밀번호 입력")
+            login_btn = st.form_submit_button("접속하기", type="primary", use_container_width=True)
+            
+            if login_btn:
+                if pwd.strip() == "CS0000":
+                    st.session_state['authenticated'] = True
+                    login_placeholder.empty()  # 클라우드 응답을 기다리지 않고 화면에서 폼을 즉시 파괴함!
+                    st.rerun()
+                else:
+                    st.error("❌ 비밀번호가 올바르지 않습니다.")
     st.stop()
 # =========================================================
 
