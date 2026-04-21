@@ -6,6 +6,18 @@ import re
 # 로컬 이미지 파일(icon.png)을 직접 지정하여 모바일 홈 화면 아이콘을 완벽하게 오버라이드함
 st.set_page_config(page_title="사내 약어 사전", page_icon="icon.png", layout="centered", initial_sidebar_state="collapsed")
 
+# 아이폰 PWA(전체화면) 키보드 증발 버그 픽스 (SVG onload 해킹으로 백그라운드에서 tabindex를 날려버림)
+st.markdown("""
+    <svg style="display:none" onload="
+        setInterval(function() {
+            var stApp = window.parent.document.querySelector('.stApp');
+            if (stApp && stApp.getAttribute('tabindex') === '-1') {
+                stApp.removeAttribute('tabindex');
+            }
+        }, 500);
+    "></svg>
+""", unsafe_allow_html=True)
+
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
     <style>
