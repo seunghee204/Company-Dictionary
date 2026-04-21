@@ -101,7 +101,7 @@ if not st.session_state['authenticated']:
         
         with st.form("login_form"):
             pwd = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="비밀번호 입력")
-            login_btn = st.form_submit_button("접속하기 & 하루(1일) 유지", type="primary", use_container_width=True)
+            login_btn = st.form_submit_button("접속하기", type="primary", use_container_width=True)
             
             if login_btn:
                 if pwd.strip() == "CS0000":
