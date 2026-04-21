@@ -4,7 +4,7 @@ import re
 
 # 페이지 설정
 # 페이지 설정 (기본 돋보기 이모지 사용)
-st.set_page_config(page_title="사내 약어 사전", page_icon="🔍", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="사내 약어 사전", page_icon="icon.png", layout="centered", initial_sidebar_state="collapsed")
 
 # 모바일 친화적인 CSS 적용 (다크모드 호환을 위해 고정 색상 제거)
 st.markdown("""
